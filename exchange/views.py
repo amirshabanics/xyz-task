@@ -20,7 +20,7 @@ class IndexView(APIView):
         scale = self.request.query_params.get("scale")
         now_timestamp = datetime.datetime.now()
         from_timestamp = now_timestamp - datetime.timedelta(days=7)
-        indexes = Index.objects.filter(timestamp__gte=from_timestamp, timestamp__lte=now_timestamp)
+        indexes = Index.objects.filter(datetime__gte=from_timestamp, datetime__lte=now_timestamp)
         filtered_indexes = []
         for index in indexes:
             # todo do for all options

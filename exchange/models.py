@@ -5,5 +5,5 @@ from django.db import models
 # Create your models here.
 
 class Index(models.Model):
-    timestamp = models.DateTimeField(auto_now_add=True)
+    datetime = models.DateTimeField()
     index = models.FloatField(validators=[MinValueValidator(0)])
