@@ -11,6 +11,7 @@ import math
 from exchange.serializers import IndexSerializer
 from exchange.const import scales
 
+
 class IndexView(APIView):
     """
     List all snippets, or create a new snippet.
@@ -33,7 +34,7 @@ class IndexView(APIView):
         indexes = Index.objects.filter(datetime__gte=from_timestamp, datetime__lte=to_timestamp)
         filtered_indexes = []
         for index in indexes:
-            if index.datetime.timestamp() % scale == 0:
+            if index.datetime.timestamp() % scale == 0 or self.request.query_params.get("scale") == "all":
                 filtered_indexes.append(index)
 
         return Response(IndexSerializer(filtered_indexes, many=True).data)
