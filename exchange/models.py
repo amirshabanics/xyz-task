@@ -6,4 +6,4 @@ from django.db import models
 
 class Index(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
-    index = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    index = models.FloatField(validators=[MinValueValidator(0)])
