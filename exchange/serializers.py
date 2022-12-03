@@ -4,8 +4,6 @@ import datetime
 
 
 class IndexSerializer(serializers.ModelSerializer):
-    # id = serializers.IntegerField(read_only=True)
-    # index = serializers.IntegerField(min_value=0)
     value = serializers.FloatField(source="index", read_only=True)
     timestamp = serializers.SerializerMethodField(read_only=True)
     datetime = serializers.IntegerField(write_only=True, )

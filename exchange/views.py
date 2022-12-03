@@ -9,7 +9,7 @@ from rest_framework import status
 import datetime
 import math
 from exchange.serializers import IndexSerializer
-
+from exchange.const import scales
 
 class IndexView(APIView):
     """
@@ -17,17 +17,24 @@ class IndexView(APIView):
     """
 
     def get(self, request, format=None):
-        scale = self.request.query_params.get("scale")
-        now_timestamp = datetime.datetime.now()
-        from_timestamp = now_timestamp - datetime.timedelta(days=7)
-        indexes = Index.objects.filter(datetime__gte=from_timestamp, datetime__lte=now_timestamp)
+        scale = scales.get(self.request.query_params.get("scale"), 60)
+        to_timestamp = self.request.query_params.get("to")
+        if not to_timestamp:
+            to_timestamp = datetime.datetime.now()
+        else:
+            to_timestamp = datetime.datetime.fromtimestamp(to_timestamp)
+
+        from_timestamp = self.request.query_params.get("from")
+        if not from_timestamp:
+            from_timestamp = to_timestamp - datetime.timedelta(days=7)
+        else:
+            from_timestamp = datetime.datetime.fromtimestamp(from_timestamp)
+
+        indexes = Index.objects.filter(datetime__gte=from_timestamp, datetime__lte=to_timestamp)
         filtered_indexes = []
         for index in indexes:
-            # todo do for all options
-            # if index.timestamp.minute % 5 == 0:
-            #     filtered_indexes.append(index)
-
-            filtered_indexes.append(index)
+            if index.datetime.timestamp() % scale == 0:
+                filtered_indexes.append(index)
 
         return Response(IndexSerializer(filtered_indexes, many=True).data)
 
